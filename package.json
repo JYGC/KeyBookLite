@@ -36,6 +36,8 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"pocketbase": "^0.21.3"
+		"pocketbase": "^0.21.3",
+		"reflect-metadata": "^0.2.2",
+		"tsyringe": "^4.8.0"
 	}
 }

@@ -1,21 +1,25 @@
 import type { AddDeviceAndHistoriesDTO } from "$lib/dtos";
-import type { IQueryParameters } from "./backend-services";
-import type { IBackendServices, IPersonDeviceServices, IPersonServices } from "./interfaces";
+import { inject, injectable } from "tsyringe";
+import type {
+  IBackendServices,
+  IPersonDeviceServices,
+  IPersonServices,
+  IDeviceServices
+} from "./interfaces";
 
+@injectable()
 export class PersonDeviceServices implements IPersonDeviceServices {
-  private readonly __backendService: IBackendServices<IQueryParameters>;
-  private readonly __personService: IPersonServices;
-
-  constructor (backendService: IBackendServices<IQueryParameters>, personService: IPersonServices) {
-    this.__backendService = backendService;
-    this.__personService = personService;
-  }
+  constructor (
+    @inject("IBackendServices") private __backendService: IBackendServices,
+    @inject("IPersonServices") private __personService: IPersonServices,
+    @inject("IDeviceServices") private __deviceService: IDeviceServices
+  ) { }
 
   addDevicesByIdentificationAndNameIfNotExists = async (
-    devices: AddDeviceAndHistoriesDTO[], 
-    propertyId: {id:string}
+    devicesAndHistories: AddDeviceAndHistoriesDTO[],
+    propertyId: string
   ) => {
-    console.table(propertyId);
+    const newDeviceIdsOut: { id:string }[] = [];
+    await this.__deviceService.addDevicesIfNotExistsIgnoreHistory(devicesAndHistories, propertyId, newDeviceIdsOut);
   };
-
 }

@@ -1,20 +1,18 @@
-import PocketBase, { type RecordListOptions, type RecordModel } from "pocketbase";
+import PocketBase, { type RecordListOptions } from "pocketbase";
 import type { IBackendServices } from "./interfaces";
+import { injectable } from "tsyringe";
+import type { IQueryParameters } from "$lib/dtos";
+import { pb } from "../data/pocketbase";
 
-export interface IQueryParameters extends Object {
-  page: number;
-  perPage: number;
-  parameters: RecordListOptions;
-}
-
-export class BackendServices implements IBackendServices<IQueryParameters> {
+@injectable()
+export class BackendServices implements IBackendServices {
   private readonly __pocketbase: PocketBase;
   
-  constructor(pocketbase: PocketBase) {
-    this.__pocketbase = pocketbase;
+  constructor() {
+    this.__pocketbase = pb;
   }
 
-  create = async <T extends {}>(
+  create = async <T extends object>(
       collectionName: string, 
       data: T,
       newIdOut: { id: string }
@@ -25,9 +23,20 @@ export class BackendServices implements IBackendServices<IQueryParameters> {
     }
   };
 
-  search = async <T extends {}>(collectionName: string, searchCriteria: IQueryParameters) => {
+  search = async <T extends object>(collectionName: string, searchCriteria: IQueryParameters) => {
+    const recordListOptions: RecordListOptions = {};
+    if (searchCriteria.parameters.expand !== null && searchCriteria.parameters.expand.trim().length > 0) {
+      recordListOptions.expand = searchCriteria.parameters.expand;
+    }
+    if (searchCriteria.parameters.fields !== null && searchCriteria.parameters.fields.trim().length > 0) {
+      recordListOptions.fields = searchCriteria.parameters.fields;
+    }
+    if (searchCriteria.parameters.filter !== null && searchCriteria.parameters.filter.trim().length > 0) {
+      recordListOptions.filter = searchCriteria.parameters.filter;
+    }
+
     const results = await this.__pocketbase.collection(collectionName).getList<T>(
-      searchCriteria.page, searchCriteria.perPage, searchCriteria.parameters);
+      searchCriteria.page, searchCriteria.perPage, recordListOptions);
     return results.items;
   };
 

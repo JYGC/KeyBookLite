@@ -1,4 +1,5 @@
 import type { AddDeviceAndHistoriesDTO } from "$lib/dtos";
+import { inject, injectable } from "tsyringe";
 import type {
   IPropertyServices,
   IDataImportServices,
@@ -6,20 +7,13 @@ import type {
   IPersonDeviceServices
 } from "./interfaces";
 
+@injectable()
 export class DataImportServices implements IDataImportServices {
-  private readonly __personServices: IPersonServices;
-  private readonly __deviceServices: IPersonDeviceServices;
-  private readonly __propertyServices: IPropertyServices;
-
   constructor(
-      personServices: IPersonServices,
-      deviceServices: IPersonDeviceServices,
-      propertyServices: IPropertyServices
-  ) {
-    this.__personServices = personServices;
-    this.__deviceServices = deviceServices;
-    this.__propertyServices = propertyServices;
-  }
+      @inject("IPersonServices") private __personServices: IPersonServices,
+      @inject("IPersonDeviceServices") private __personDeviceServices: IPersonDeviceServices,
+      @inject("IPropertyServices") private __propertyServices: IPropertyServices
+  ) { }
 
   importCsv = async (csvText: string) => {
     const lines = csvText.split('\n');
@@ -39,12 +33,11 @@ export class DataImportServices implements IDataImportServices {
   
     const subHeadingSplit = nonEmptyLines[1].split(',');
   
-    const devices = [];
+    const devicesAndHistories = [];
     for (let c = 2; c < nonEmptyLines.length; c++) {
       const deviceLineSplit = nonEmptyLines[c].split(',');
   
       let deviceProcurementDate: Date | null = null;
-      let deviceDefunctDate: Date | null = null;
   
       const device: AddDeviceAndHistoriesDTO = {
         name: deviceLineSplit[0],
@@ -127,11 +120,11 @@ export class DataImportServices implements IDataImportServices {
   
       device.currentHolder = currentHolderRegistered.length === 0 || currentHolderRegistered === 'Storage' || currentHolderRegistered === '!!LOST!!' ? null : currentHolderRegistered;
   
-      devices.push(device);
+      devicesAndHistories.push(device);
     }
   
     const persons: string[] = [];
-    devices.forEach(d => {
+    devicesAndHistories.forEach(d => {
       d.personDeviceHistories.forEach(pdh => {
         if (pdh.deviceHolder !== null && !persons.find(p => p === pdh.deviceHolder)) {
           persons.push(pdh.deviceHolder);
@@ -139,9 +132,9 @@ export class DataImportServices implements IDataImportServices {
       });
     });
 
-    let propertyId = {id:''};
-    await this.__propertyServices.addPropertyIfNotExists(propertyAddress, propertyId);
-    await this.__personServices.addPersonByNameIfNotExists(persons);
-    await this.__deviceServices.addDevicesByIdentificationAndNameIfNotExists(devices, propertyId);
+    const propertyId = {id: ''};
+    await this.__propertyServices.addPropertyIfNotExistsIgnoreHistory(propertyAddress, propertyId);
+    await this.__personServices.addPersonByNameIfNotExistsIgnoreHistory(persons);
+    await this.__personDeviceServices.addDevicesByIdentificationAndNameIfNotExists(devicesAndHistories, propertyId.id);
   }
 }

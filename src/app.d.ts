@@ -1,4 +1,4 @@
-import type { IBackendServices, IDataImportServices, IPersonDeviceServices, IPersonServices, IPropertyServices } from '$lib/server/services/interfaces';
+import type { IBackendServices, IDataImportServices, IDeviceServices, IPersonDeviceServices, IPersonServices, IPropertyServices } from '$lib/server/services/interfaces';
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
 declare global {
@@ -8,6 +8,7 @@ declare global {
 			backendServices: IBackendServices;
 			propertyServices: IPropertyServices;
 			personServices: IPersonServices;
+			deviceServices: IDeviceServices;
 			personDeviceServices: IPersonDeviceServices;
 			dataImportServices: IDataImportServices;
 		}
