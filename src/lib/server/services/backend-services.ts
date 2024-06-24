@@ -2,7 +2,7 @@ import PocketBase, { type RecordListOptions } from "pocketbase";
 import type { IBackendServices } from "./interfaces";
 import { injectable } from "tsyringe";
 import type { IQueryParameters } from "$lib/dtos";
-import { pb } from "../data/pocketbase";
+import { pb } from "../pocketbase";
 
 @injectable()
 export class BackendServices implements IBackendServices {
