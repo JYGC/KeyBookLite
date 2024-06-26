@@ -1,6 +1,6 @@
-import type { PageServerLoad } from "./devices/csvimport/$types";
+import type { PageServerLoad } from "./$types";
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load = (async ({ locals }) => {
   const resultList = await locals.backendServices.search('devices', { 
     page: 1,
     perPage: 100,
@@ -13,4 +13,4 @@ export const load: PageServerLoad = async ({ locals }) => {
   return {
     resultList
   };
-};
+}) satisfies PageServerLoad;

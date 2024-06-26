@@ -1,14 +1,13 @@
-import "reflect-metadata"
-import { BackendServices } from '$lib/server/services/backend-services';
-import { DataImportServices } from '$lib/server/services/data-import-services';
-import { PersonDeviceServices } from '$lib/server/services/person-device-services';
-import { PersonServices } from '$lib/server/services/person-services';
-import { PropertyServices } from '$lib/server/services/property-services';
-import type { Handle } from '@sveltejs/kit';
-import { container } from 'tsyringe';
-import { DeviceServices } from "$lib/server/services/device-services";
+import { container } from "tsyringe";
+import { BackendServices } from "./services/backend-services";
+import { PropertyServices } from "./services/property-services";
+import { PersonServices } from "./services/person-services";
+import { DeviceServices } from "./services/device-services";
+import { PersonDeviceServices } from "./services/person-device-services";
+import { DataImportServices } from "./services/data-import-services";
+import type { RequestEvent } from "@sveltejs/kit";
 
-export const handle: Handle = async ({ event, resolve }) => {
+export const createDependencyInjectionContainer= (event: RequestEvent) => {
   container.register("IBackendServices", { useClass: BackendServices });
   container.register("IPropertyServices", { useClass: PropertyServices });
   container.register("IPersonServices", { useClass: PersonServices });
@@ -29,7 +28,4 @@ export const handle: Handle = async ({ event, resolve }) => {
   event.locals.deviceServices = deviceServices;
   event.locals.personDeviceServices = personDeviceServices;
   event.locals.dataImportServices = dataImportServices;
-  const response = await resolve(event);
-
-  return response;
 };
