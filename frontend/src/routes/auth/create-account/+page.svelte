@@ -4,11 +4,14 @@
 
   const { form }: { form: ActionData } = $props();
 
+  let name = $state<string>(form?.name ?? "");
   let email = $state<string>(form?.email ?? "");
   let password = $state<string>(form?.password ?? "");
+
+  let error = $derived<string>(form?.message);
 </script>
 
-<h1>Log into account</h1>
+<h1>Create an Account</h1>
 <form
   method="post"
   use:enhance={() => {
@@ -17,6 +20,14 @@
     };
   }}
 >
+  <div>
+    <label for="name">Name</label>
+    <input
+      type="text"
+      name="name"
+      bind:value={name}
+    />
+  </div>
   <div>
     <label for="email">Email</label>
     <input
@@ -33,15 +44,20 @@
       bind:value={password}
     />
   </div>
+
+  {#if error}
+    <p class="error">{error}</p>
+  {/if}
+
   <div>
     <input
       type="submit"
-      disabled={email.length === 0 || password.length < 8}
-      value="Log in!"
+      disabled={name.length === 0 || email.length === 0 || password.length < 8}
+      value="Create account!"
     />
   </div>
 </form>
 <div>
-  <p>Don't have an account?</p>
-  <a href="/auth/create-account">Create an Account</a>
+  <p>Already have an account?</p>
+  <a href="/auth/login">Login</a>
 </div>
