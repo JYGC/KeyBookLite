@@ -1,7 +1,7 @@
 import "reflect-metadata"
 import type { Handle } from '@sveltejs/kit';
 import { createDependencyInjectionContainer } from "$lib/server/dependency-injection";
-import { pb, pbAdmin } from "$lib/server/pocketbase";
+import { pb } from "$lib/server/pocketbase";
 
 export const handle: Handle = async ({ event, resolve }) => {
   event.locals.pb = pb;
@@ -16,8 +16,6 @@ export const handle: Handle = async ({ event, resolve }) => {
     // clear the auth store on failed refresh
     pb.authStore.clear();
   }
-
-  event.locals.pbAdmin = pbAdmin;
   
   createDependencyInjectionContainer(event);
 

@@ -6,7 +6,6 @@ declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
-			pbAdmin: Client;
 			pb: Client;
 			backendServices: IBackendServices;
 			propertyServices: IPropertyServices;

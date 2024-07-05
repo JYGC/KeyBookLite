@@ -31,6 +31,11 @@ export interface AddDeviceAndHistoriesDTO {
   }[]
 }
 
+export interface AddPropertyDeviceAndHistoriesDTO {
+  propertyAddress: string;
+  devicesPersonDevicesAndHistories: AddDeviceAndHistoriesDTO[];
+}
+
 export interface DeviceIdNameIdentifierAndTypeDTO {
   name: string,
   identifier: string,

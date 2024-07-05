@@ -1,22 +1,34 @@
 <script lang="ts">
-	import { enhance } from "$app/forms";
+	import { CsvFileToObjectConverter } from "$lib/modules/csvfiletoobject-converter.svelte";
+	import { uploadCsvApiCall } from "$lib/api/devices";
 
   const acceptedExtensions = ['.csv']
+  const csvFileToObjectConverter = new CsvFileToObjectConverter();
+
+  const uploadCsvAsync = async () => {
+    uploadCsvApiCall(document.cookie, await csvFileToObjectConverter.outputAsync);
+  };
 </script>
 
-<form
-  method="post"
-  use:enhance
-  enctype="multipart/form-data"
->
-  <div class="group">
-    <input
-      type="file"
-      name="fileToUpload"
-      id="file"
-      accept={acceptedExtensions.join(',')}
-      required
-    />
-  </div>
-  <input type="submit" value="Upload" />
-</form>
+<div class="group">
+  <input
+    type="file"
+    name="fileToUpload"
+    id="file"
+    accept={acceptedExtensions.join(',')}
+    bind:files={csvFileToObjectConverter.input}
+    required
+  />
+</div>
+<p>
+  {#await csvFileToObjectConverter.outputAsync}
+    ...awaiting
+  {:then output}
+    {#if output !== null}
+      {JSON.stringify(output)}
+    {/if}
+  {:catch error}
+    {error}
+  {/await}
+</p>
+<button onclick={uploadCsvAsync}>Upload</button>
