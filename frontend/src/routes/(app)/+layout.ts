@@ -9,4 +9,8 @@ export const load: LayoutLoad = async () => {
   if (!pb.authStore.isValid) {
     return redirect(303, "/auth");
   }
+  await pb.collection('users').authRefresh();
+  pb.authStore.onChange((token, model) => {
+    console.log('New store data:', token, model);
+  });
 };
