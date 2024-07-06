@@ -1,12 +1,9 @@
 <script lang="ts">
-	import { pb } from "$lib/api/pocketbase";
+	import { LoginApi } from "$lib/api/login-api.svelte";
 
-  let email = $state<string>("");
-  let password = $state<string>("");
-
+  const loginApi = new LoginApi();
   const login = async () => {
-    await pb.collection("users").authWithPassword(email, password);
-    document.cookie = pb.authStore.exportToCookie({ httpOnly: false });
+    document.cookie = await loginApi.callApi();
     window.location.replace("");
   };
 </script>
@@ -18,7 +15,7 @@
   <input
     type="email"
     name="email"
-    bind:value={email}
+    bind:value={loginApi.email}
   />
 </div>
 <div>
@@ -26,17 +23,17 @@
   <input
     type="password"
     name="password"
-    bind:value={password}
+    bind:value={loginApi.password}
   />
 </div>
 <div>
   <button
-    disabled={email.length === 0 || password.length < 8}
+    disabled={loginApi.email.length === 0 || loginApi.password.length < 8}
     onclick={login}
   >Log in!</button>
 </div>
 
 <div>
   <p>Don't have an account?</p>
-  <a href="/auth/create-account">Create an Account</a>
+  <a href="/auth/register">Create an Account</a>
 </div>

@@ -1,13 +1,11 @@
 <script lang="ts">
 	import { CsvFileToObjectConverter } from "$lib/modules/csvfiletoobject-converter.svelte";
-	import { uploadCsvApiCall } from "$lib/api/devices";
+	import { UploadCsvApi } from "$lib/api/uploadcsv-api";
 
   const acceptedExtensions = ['.csv']
+  
   const csvFileToObjectConverter = new CsvFileToObjectConverter();
-
-  const uploadCsvAsync = async () => {
-    uploadCsvApiCall(document.cookie, await csvFileToObjectConverter.outputAsync);
-  };
+  const uploadCsvApi = new UploadCsvApi(csvFileToObjectConverter, document.cookie);
 </script>
 
 <div class="group">
@@ -31,4 +29,4 @@
     {error}
   {/await}
 </p>
-<button onclick={uploadCsvAsync}>Upload</button>
+<button onclick={uploadCsvApi.callApi}>Upload</button>
