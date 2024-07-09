@@ -9,35 +9,35 @@ export interface IQueryParameters {
 }
 
 export interface PersonNameDTO {
-  name: string;
+  Name: string;
 }
 
 export interface AddPersonDTO {
-  name: string;
-  type: string;
+  Name: string;
+  Type: string;
 }
 
 export interface AddDeviceAndHistoriesDTO {
-  name: string;
-  identifier: string;
-  type: string;
-  defunctReason: string;
-  currentHolder: string | null;
-  deviceHistories: object[];
-  personDeviceHistories: {
-    deviceHolder: string | null;
-    dateSpecified: Date;
-    actionDescription: string;
+  Name: string;
+  Identifier: string;
+  Type: string;
+  DefunctReason: string;
+  CurrentHolder: string | null;
+  DeviceHistories: object[];
+  PersonDeviceHistories: {
+    DeviceHolder: string | null;
+    DateSpecified: Date;
+    ActionDescription: string;
   }[]
 }
 
 export interface AddPropertyDeviceAndHistoriesDTO {
-  propertyAddress: string;
-  devicesPersonDevicesAndHistories: AddDeviceAndHistoriesDTO[];
+  PropertyAddress: string;
+  DevicesPersonDevicesAndHistories: AddDeviceAndHistoriesDTO[];
 }
 
 export interface DeviceIdNameIdentifierAndTypeDTO {
-  name: string,
-  identifier: string,
-  type: string,
+  Name: string,
+  Identifier: string,
+  Type: string,
 }

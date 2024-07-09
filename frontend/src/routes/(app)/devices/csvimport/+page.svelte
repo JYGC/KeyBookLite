@@ -6,6 +6,19 @@
   
   const csvFileToObjectConverter = new CsvFileToObjectConverter();
   const uploadCsvApi = new UploadCsvApi(csvFileToObjectConverter, document.cookie);
+
+  const uploadFile = () => {
+    uploadCsvApi.callApi();
+    csvFileToObjectConverter.input = null;
+  };
+
+  let disableUploadButton = $state(true);
+  
+  $effect(() => {
+    csvFileToObjectConverter.outputAsync.then(value => {
+      disableUploadButton = value === null;
+    });
+  });
 </script>
 
 <div class="group">
@@ -18,6 +31,10 @@
     required
   />
 </div>
+<button
+  disabled={disableUploadButton}
+  onclick={uploadFile}
+>Upload</button>
 <p>
   {#await csvFileToObjectConverter.outputAsync}
     ...awaiting
@@ -29,4 +46,3 @@
     {error}
   {/await}
 </p>
-<button onclick={uploadCsvApi.callApi}>Upload</button>

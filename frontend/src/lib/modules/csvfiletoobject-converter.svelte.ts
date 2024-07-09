@@ -32,13 +32,13 @@ export class CsvFileToObjectConverter {
       let deviceProcurementDate: Date | null = null;
   
       const device: AddDeviceAndHistoriesDTO = {
-        name: deviceLineSplit[0],
-        identifier: deviceLineSplit[1],
-        type: deviceLineSplit[2],
-        defunctReason: 'None',
-        currentHolder: null,
-        deviceHistories: [],
-        personDeviceHistories: []
+        Name: deviceLineSplit[0],
+        Identifier: deviceLineSplit[1],
+        Type: deviceLineSplit[2],
+        DefunctReason: 'None',
+        CurrentHolder: null,
+        DeviceHistories: [],
+        PersonDeviceHistories: []
       };
   
       let lastNonEmptyRow = -1;
@@ -48,34 +48,34 @@ export class CsvFileToObjectConverter {
           lastNonEmptyRow = r;
           if (deviceProcurementDate === null) {
             deviceProcurementDate = new Date(subHeadingSplit[r]);
-            device.deviceHistories.push({
+            device.DeviceHistories.push({
               dateSpecified: deviceProcurementDate,
               actionDescription: 'procured'
             });
           }
           if (deviceHolder === '!!LOST!!') {
-            device.personDeviceHistories.push({
-              deviceHolder: null,
-              dateSpecified: new Date(subHeadingSplit[r]),
-              actionDescription: 'device lost'
+            device.PersonDeviceHistories.push({
+              DeviceHolder: null,
+              DateSpecified: new Date(subHeadingSplit[r]),
+              ActionDescription: 'device lost'
             });
           } else if (deviceHolder === '!!STOLEN BY TENANT!!') {
-            device.personDeviceHistories.push({
-              deviceHolder: null,
-              dateSpecified: new Date(subHeadingSplit[r]),
-              actionDescription: 'device stolen'
+            device.PersonDeviceHistories.push({
+              DeviceHolder: null,
+              DateSpecified: new Date(subHeadingSplit[r]),
+              ActionDescription: 'device stolen'
             });
           } else if (deviceHolder === '!!NOT WORKING!!') {
-            device.personDeviceHistories.push({
-              deviceHolder: null,
-              dateSpecified: new Date(subHeadingSplit[r]),
-              actionDescription: 'device damaged'
+            device.PersonDeviceHistories.push({
+              DeviceHolder: null,
+              DateSpecified: new Date(subHeadingSplit[r]),
+              ActionDescription: 'device damaged'
             });
           } else if (deviceHolder !== 'Storage') {
-            device.personDeviceHistories.push({
-              deviceHolder,
-              dateSpecified: new Date(subHeadingSplit[r]),
-              actionDescription: 'device held by'
+            device.PersonDeviceHistories.push({
+              DeviceHolder: deviceHolder,
+              DateSpecified: new Date(subHeadingSplit[r]),
+              ActionDescription: 'device held by'
             });
           }
         }
@@ -92,32 +92,32 @@ export class CsvFileToObjectConverter {
   
         const lastDeviceHolder = deviceLineSplit[lastNonEmptyRow].trim();
         if (lastDeviceHolder === '!!LOST!!') {
-          device.defunctReason = 'Lost';
+          device.DefunctReason = 'Lost';
           lastDeviceHistory.actionDescription = 'device lost';
         } else if (lastDeviceHolder === '!!STOLEN BY TENANT!!') {
-          device.defunctReason = 'Stolen';
+          device.DefunctReason = 'Stolen';
           lastDeviceHistory.actionDescription = 'device stolen';
         } else if (lastDeviceHolder === '!!NOT WORKING!!') {
-          device.defunctReason = 'Damaged';
+          device.DefunctReason = 'Damaged';
           lastDeviceHistory.actionDescription = 'device damaged';
         } else {
-          device.defunctReason = 'Retired';
+          device.DefunctReason = 'Retired';
           lastDeviceHistory.actionDescription = 'device retired';
         }
   
-        device.deviceHistories.push(lastDeviceHistory);
+        device.DeviceHistories.push(lastDeviceHistory);
       }
   
       const currentHolderRegistered = deviceLineSplit[deviceLineSplit.length - 1];
   
-      device.currentHolder = currentHolderRegistered.length === 0 || currentHolderRegistered === 'Storage' || currentHolderRegistered === '!!LOST!!' ? null : currentHolderRegistered;
+      device.CurrentHolder = currentHolderRegistered.length === 0 || currentHolderRegistered === 'Storage' || currentHolderRegistered === '!!LOST!!' ? null : currentHolderRegistered;
   
       devicesPersonDevicesAndHistories.push(device);
     }
 
     return {
-      propertyAddress,
-      devicesPersonDevicesAndHistories
+      PropertyAddress: propertyAddress,
+      DevicesPersonDevicesAndHistories: devicesPersonDevicesAndHistories
     }
   };
   

@@ -1,12 +1,35 @@
 package main
 
 import (
-	"keybook/backend/api"
+	"fmt"
+	"keybook/backend/internal/handlers"
+	"keybook/backend/internal/repositories"
 	"log"
+	"os"
+
+	"github.com/pocketbase/pocketbase"
+	"github.com/pocketbase/pocketbase/apis"
+	"github.com/pocketbase/pocketbase/core"
+	"go.uber.org/dig"
 )
 
 func main() {
-	app := api.NewModifiedPockBaseApp()
+	container := dig.New()
+	container.Provide(repositories.NewPersonDeviceRepository)
+	container.Provide(handlers.NewDeviceHandlers)
+
+	app := pocketbase.New()
+
+	// serves static files from the provided public dir (if exists)
+	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
+		e.Router.GET("/*", apis.StaticDirectoryHandler(os.DirFS("./pb_public"), false))
+
+		err := container.Invoke(handlers.InvokeDeviceHandlers(e.Router))
+		if err != nil {
+			fmt.Printf("err: %v\n", err)
+		}
+		return nil
+	})
 
 	if err := app.Start(); err != nil {
 		log.Fatal(err)
