@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"keybook/backend/internal/handlers"
 	"keybook/backend/internal/repositories"
 	"log"
@@ -22,6 +21,7 @@ func main() {
 
 	container.Invoke(func(
 		app *pocketbase.PocketBase,
+		personRepository repositories.IPersonRepository,
 		deviceHandlers handlers.IDeviceHandlers,
 	) {
 		// serves static files from the provided public dir (if exists)
@@ -33,8 +33,7 @@ func main() {
 		})
 
 		app.OnModelAfterCreate("users").Add(func(e *core.ModelEvent) error {
-			fmt.Println(e.Model.TableName())
-			fmt.Println(e.Model.GetId())
+			personRepository.CreatePersonForUser(e.Model.GetId())
 			return nil
 		})
 
