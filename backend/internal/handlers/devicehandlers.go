@@ -41,8 +41,6 @@ func NewDeviceHandlers(personDeviceRepository repositories.IPersonDeviceReposito
 	return deviceHandlers
 }
 
-func InvokeDeviceHandlers(router *echo.Echo) func(IDeviceHandlers) {
-	return func(deviceHandlers IDeviceHandlers) {
-		router.POST("/api/device/importcsv", deviceHandlers.ImportCsv)
-	}
+func AddDeviceHandlersToRouter(router *echo.Echo, deviceHandlers IDeviceHandlers) {
+	router.POST("/api/device/importcsv", deviceHandlers.ImportCsv)
 }
