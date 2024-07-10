@@ -15,26 +15,25 @@ import (
 
 func main() {
 	container := dig.New()
-	container.Provide(
-		repositories.NewPersonDeviceRepository,
-		dig.As(new(repositories.IPersonDeviceRepository)),
-		dig.Name("PersonDeviceRepository"),
-	)
-	container.Provide(
-		handlers.NewDeviceHandlers,
-		dig.As(new(handlers.IDeviceHandlers)),
-		dig.Name("DeviceHandlers"),
-	)
+	container.Provide(repositories.NewPersonRepository)
+	container.Provide(repositories.NewPersonDeviceRepository)
+	container.Provide(handlers.NewDeviceHandlers)
 
 	app := pocketbase.New()
+
 	// serves static files from the provided public dir (if exists)
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
 		e.Router.GET("/*", apis.StaticDirectoryHandler(os.DirFS("./pb_public"), false))
 
-		err := container.Invoke(handlers.InvokeDeviceHandlers(e.Router))
-		if err != nil {
-			fmt.Printf("err: %v\n", err)
+		if errInvokeDeviceHandlers := container.Invoke(handlers.InvokeDeviceHandlers(e.Router)); errInvokeDeviceHandlers != nil {
+			fmt.Printf("err: %v\n", errInvokeDeviceHandlers)
 		}
+		return nil
+	})
+
+	app.OnModelAfterCreate("users").Add(func(e *core.ModelEvent) error {
+		fmt.Println(e.Model.TableName())
+		fmt.Println(e.Model.GetId())
 		return nil
 	})
 
