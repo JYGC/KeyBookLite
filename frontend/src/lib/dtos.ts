@@ -8,15 +8,6 @@ export interface IQueryParameters {
   };
 }
 
-export interface PersonNameDTO {
-  Name: string;
-}
-
-export interface AddPersonDTO {
-  Name: string;
-  Type: string;
-}
-
 export interface AddDeviceAndHistoriesDTO {
   Name: string;
   Identifier: string;
