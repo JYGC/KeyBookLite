@@ -1,9 +1,11 @@
 package main
 
 import (
+	"keybook/backend/internal/frontend"
 	"keybook/backend/internal/handlers"
 	"keybook/backend/internal/repositories"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/pocketbase/pocketbase"
@@ -12,7 +14,13 @@ import (
 	"go.uber.org/dig"
 )
 
-func main() {
+func startFrontend() {
+	mux := http.NewServeMux()
+	mux.Handle("/", frontend.SvelteKitHandler("/"))
+	log.Fatal(http.ListenAndServe(":5050", mux))
+}
+
+func startBackend() {
 	container := dig.New()
 	container.Provide(pocketbase.New)
 	container.Provide(repositories.NewPersonRepository)
@@ -41,4 +49,9 @@ func main() {
 			log.Fatal(err)
 		}
 	})
+}
+
+func main() {
+	go startFrontend()
+	startBackend()
 }
