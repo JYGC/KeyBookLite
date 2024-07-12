@@ -1,9 +1,11 @@
 <script lang="ts">
-	import { LoginApi } from "$lib/api/loginapi.svelte";
-	import { RegisterApi } from "$lib/api/registerapi.svelte";
+	import { BackendClient } from "$lib/modules/backendclient.svelte";
+  import { LoginApi } from "$lib/api/loginapi.svelte";
+  import { RegisterApi } from "$lib/api/registerapi.svelte";
 
-  const registerApi = new RegisterApi();
-  const loginApi = new LoginApi();
+  const backendClient = new BackendClient();
+  const registerApi = new RegisterApi(backendClient);
+  const loginApi = new LoginApi(backendClient);
 
   const registerAndLogin = async () => {
     const isRegistrationSuccessful = await registerApi.callApi();

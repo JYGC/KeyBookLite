@@ -1,18 +1,18 @@
-import { pb } from "$lib/api/pocketbase";
 import { redirect } from "@sveltejs/kit";
 import type { LayoutLoad } from "./$types";
+import { BackendClient } from "$lib/modules/backendclient.svelte";
 
 export const ssr = false;
 export const prerender = true;
 export const trailingSlash = 'always';
 
 export const load: LayoutLoad = async () => {
-  pb.authStore.loadFromCookie(document.cookie);
-  if (!pb.authStore.isValid) {
+  const authManager = new BackendClient();
+  if (!authManager.isTokenValid) {
     return redirect(303, "/auth");
   }
-  await pb.collection('users').authRefresh();
-  pb.authStore.onChange((token, model) => {
+  await authManager.authRefresh();
+  authManager.pb.authStore.onChange((token, model) => {
     console.log('New store data:', token, model);
   });
 };

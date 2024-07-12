@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { BackendClient } from '$lib/modules/backendclient.svelte';
 	import { LoginApi } from "$lib/api/loginapi.svelte";
 
-  const loginApi = new LoginApi();
+  const backendClient = new BackendClient();
+  const loginApi = new LoginApi(backendClient);
   const login = async () => {
     document.cookie = await loginApi.callApi();
     window.location.replace("");

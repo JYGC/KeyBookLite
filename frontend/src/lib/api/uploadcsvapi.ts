@@ -1,16 +1,16 @@
-import { pb } from "$lib/api/pocketbase";
+import type { BackendClient } from "$lib/modules/backendclient.svelte";
 import type { CsvFileToObjectConverter } from "$lib/modules/csvfiletoobjectconverter.svelte";
 
 export class UploadCsvApi {
   private readonly __csvFileToObjectConverter: CsvFileToObjectConverter;
-  private readonly __pbAuthCookie: string;
+  private readonly __authManager: BackendClient;
   
   constructor(
     csvFileToObjectConverter: CsvFileToObjectConverter,
-    pbAuthCookie: string
+    authManager: BackendClient
   ) {
     this.__csvFileToObjectConverter = csvFileToObjectConverter;
-    this.__pbAuthCookie = pbAuthCookie;
+    this.__authManager = authManager;
   }
 
   callApi = async () => {
@@ -18,8 +18,7 @@ export class UploadCsvApi {
     if (csvContentObject === null) {
       return;
     }
-    pb.authStore.loadFromCookie(this.__pbAuthCookie);
-    await pb.send("/api/device/importcsv", {
+    await this.__authManager.pb.send("/api/device/importcsv", {
       method: "POST",
       body: csvContentObject,
     });
