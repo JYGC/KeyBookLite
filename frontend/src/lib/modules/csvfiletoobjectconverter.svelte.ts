@@ -121,8 +121,8 @@ export class CsvFileToObjectConverter {
     }
   };
   
-  input = $state<FileList | null>(null);
-  outputAsync = $derived<Promise<AddPropertyDeviceAndHistoriesDTO | null>>(this.convertCsvFileToObject(this.input));
+  public input = $state<FileList | null>(null);
+  public outputAsync = $derived<Promise<AddPropertyDeviceAndHistoriesDTO | null>>(this.convertCsvFileToObject(this.input));
 
   constructor() { }
 }

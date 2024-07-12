@@ -13,7 +13,7 @@ export class UploadCsvApi {
     this.__authManager = authManager;
   }
 
-  callApi = async () => {
+  public callApi = async () => {
     const csvContentObject = await this.__csvFileToObjectConverter.outputAsync;
     if (csvContentObject === null) {
       return;
