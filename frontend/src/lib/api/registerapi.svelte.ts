@@ -24,7 +24,6 @@ export class RegisterApi {
       });
       return true;
     } catch (ex) {
-      console.log(ex);
       this.__error = JSON.stringify(ex);
       return false;
     }
