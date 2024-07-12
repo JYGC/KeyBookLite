@@ -1,5 +1,5 @@
 import { pb } from "$lib/api/pocketbase";
-import type { CsvFileToObjectConverter } from "$lib/modules/csvfiletoobject-converter.svelte";
+import type { CsvFileToObjectConverter } from "$lib/modules/csvfiletoobjectconverter.svelte";
 
 export class UploadCsvApi {
   private readonly __csvFileToObjectConverter: CsvFileToObjectConverter;

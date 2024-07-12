@@ -1,10 +1,18 @@
 <script lang="ts">
-	import { RegisterAndLoginApi } from "$lib/api/registerandlogin-api.svelte";
+	import { LoginApi } from "$lib/api/loginapi.svelte";
+	import { RegisterApi } from "$lib/api/registerapi.svelte";
 
-  const registerAndLoginApi = new RegisterAndLoginApi();
+  const registerApi = new RegisterApi();
+  const loginApi = new LoginApi();
 
-  const register = async () => {
-    document.cookie = await registerAndLoginApi.callApi();
+  const registerAndLogin = async () => {
+    const isRegistrationSuccessful = await registerApi.callApi();
+    if (!isRegistrationSuccessful) {
+      return;
+    }
+    loginApi.email = registerApi.email;
+    loginApi.password = registerApi.password;
+    document.cookie = await loginApi.callApi();
     window.location.replace("");
 
   };
@@ -16,7 +24,7 @@
   <input
     type="text"
     name="name"
-    bind:value={registerAndLoginApi.name}
+    bind:value={registerApi.name}
   />
 </div>
 <div>
@@ -24,7 +32,7 @@
   <input
     type="email"
     name="email"
-    bind:value={registerAndLoginApi.email}
+    bind:value={registerApi.email}
   />
 </div>
 <div>
@@ -32,22 +40,22 @@
   <input
     type="password"
     name="password"
-    bind:value={registerAndLoginApi.password}
+    bind:value={registerApi.password}
   />
 </div>
 
-{#if registerAndLoginApi.error}
-  <p class="error">{registerAndLoginApi.error}</p>
+{#if registerApi.error}
+  <p class="error">{registerApi.error}</p>
 {/if}
 
 <div>
   <button
     disabled={
-      registerAndLoginApi.name.length === 0 ||
-      registerAndLoginApi.email.length === 0 ||
-      registerAndLoginApi.password.length < 8
+      registerApi.name.length === 0 ||
+      registerApi.email.length === 0 ||
+      registerApi.password.length < 8
     }
-    onclick={register}
+    onclick={registerAndLogin}
   >Create account!</button>
 </div>
 

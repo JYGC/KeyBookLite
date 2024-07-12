@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { DeviceListDataService } from "$lib/modules/device-list-dataservice.svelte";
+	import { DeviceListDataService } from "$lib/modules/devicelistdataservice.svelte";
 
   const deviceListDataService = new DeviceListDataService();
 </script>

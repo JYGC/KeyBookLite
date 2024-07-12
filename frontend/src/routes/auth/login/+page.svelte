@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { LoginApi } from "$lib/api/login-api.svelte";
+	import { LoginApi } from "$lib/api/loginapi.svelte";
 
   const loginApi = new LoginApi();
   const login = async () => {

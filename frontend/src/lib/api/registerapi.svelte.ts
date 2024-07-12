@@ -1,13 +1,13 @@
 import { pb } from "./pocketbase";
 
-export class RegisterAndLoginApi {
+export class RegisterApi {
   public name = $state<string>("");
   public email = $state<string>("");
   public password = $state<string>("");
 
   private __error = $state<string>("");
 
-  public callApi = async (): Promise<string> => {
+  public callApi = async (): Promise<boolean> => {
     try {
       await pb.collection("users").create({
         name: this.name,
@@ -16,15 +16,10 @@ export class RegisterAndLoginApi {
         email: this.email,
         emailVisibility: false,
       });
-
-      await pb
-        .collection("users")
-        .authWithPassword(this.email, this.password);
-
-      return pb.authStore.exportToCookie({ httpOnly: false });
-    } catch (ex: any) {
+      return true;
+    } catch (ex) {
       this.__error = JSON.stringify(ex);
-      return "";
+      return false;
     }
   };
 
