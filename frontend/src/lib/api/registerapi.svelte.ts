@@ -1,4 +1,4 @@
-import type { BackendClient } from "$lib/modules/backendclient.svelte";
+import type { BackendClient } from "$lib/api/backendclient.svelte";
 
 export class RegisterApi {
   private readonly __backendClient: BackendClient;

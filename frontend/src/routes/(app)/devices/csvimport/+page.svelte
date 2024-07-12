@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { CsvFileToObjectConverter } from "$lib/modules/csvfiletoobjectconverter.svelte";
 	import { UploadCsvApi } from "$lib/api/uploadcsvapi";
-	import { BackendClient } from "$lib/modules/backendclient.svelte";
+	import { BackendClient } from "$lib/api/backendclient.svelte";
 
   const acceptedExtensions = ['.csv']
   

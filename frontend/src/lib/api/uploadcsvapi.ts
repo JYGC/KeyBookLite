@@ -1,4 +1,4 @@
-import type { BackendClient } from "$lib/modules/backendclient.svelte";
+import type { BackendClient } from "$lib/api/backendclient.svelte";
 import type { CsvFileToObjectConverter } from "$lib/modules/csvfiletoobjectconverter.svelte";
 
 export class UploadCsvApi {

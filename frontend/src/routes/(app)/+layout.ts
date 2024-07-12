@@ -1,6 +1,6 @@
 import { redirect } from "@sveltejs/kit";
 import type { LayoutLoad } from "./$types";
-import { BackendClient } from "$lib/modules/backendclient.svelte";
+import { BackendClient } from "$lib/api/backendclient.svelte";
 
 export const ssr = false;
 export const prerender = true;

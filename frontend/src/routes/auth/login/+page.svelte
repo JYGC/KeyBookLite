@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { BackendClient } from '$lib/modules/backendclient.svelte';
+	import { BackendClient } from '$lib/api/backendclient.svelte';
 	import { LoginApi } from "$lib/api/loginapi.svelte";
 
   const backendClient = new BackendClient();
