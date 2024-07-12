@@ -12,13 +12,7 @@
     csvFileToObjectConverter.input = null;
   };
 
-  let disableUploadButton = $state(true);
-  
-  $effect(() => {
-    csvFileToObjectConverter.outputAsync.then(value => {
-      disableUploadButton = value === null;
-    });
-  });
+  let disableUploadButtonAsync = $derived.by(async () => await csvFileToObjectConverter.outputAsync === null);
 </script>
 
 <div class="group">
@@ -31,10 +25,12 @@
     required
   />
 </div>
-<button
-  disabled={disableUploadButton}
-  onclick={uploadFile}
->Upload</button>
+{#await disableUploadButtonAsync then value} 
+  <button
+    disabled={value}
+    onclick={uploadFile}
+  >Upload</button>
+{/await}
 <p>
   {#await csvFileToObjectConverter.outputAsync}
     ...awaiting
