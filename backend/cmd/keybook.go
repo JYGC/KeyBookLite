@@ -1,6 +1,7 @@
 package main
 
 import (
+	"keybook/backend/internal/databases"
 	"keybook/backend/internal/frontend"
 	"keybook/backend/internal/handlers"
 	"keybook/backend/internal/repositories"
@@ -22,10 +23,12 @@ func startFrontend() {
 func startBackend() {
 	container := dig.New()
 	container.Provide(pocketbase.New)
+	container.Provide(databases.NewHistoryDatabase)
 
 	container.Provide(repositories.NewPersonRepository)
 	container.Provide(repositories.NewPropertyRepository)
 	container.Provide(repositories.NewPersonDeviceRepository)
+	container.Provide(repositories.NewPersonDeviceHistoryRepository)
 
 	container.Provide(services.NewDataImportServices)
 
