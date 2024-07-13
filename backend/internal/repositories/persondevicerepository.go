@@ -1,12 +1,19 @@
 package repositories
 
+import (
+	"github.com/pocketbase/pocketbase"
+)
+
 type IPersonDeviceRepository interface {
 }
 
 type PersonDeviceRepository struct {
+	app *pocketbase.PocketBase
 }
 
-func NewPersonDeviceRepository() IPersonDeviceRepository {
-	personDeviceRepository := PersonDeviceRepository{}
+func NewPersonDeviceRepository(app *pocketbase.PocketBase) IPersonDeviceRepository {
+	personDeviceRepository := PersonDeviceRepository{
+		app,
+	}
 	return personDeviceRepository
 }

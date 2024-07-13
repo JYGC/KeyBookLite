@@ -46,7 +46,9 @@ func (p PropertyRepository) AddNewProperty(owner *models.Record, propertyAddress
 	return "", nil
 }
 
-func NewPropertyRepository() IPropertyRepository {
-	propertyRepository := PropertyRepository{}
+func NewPropertyRepository(app *pocketbase.PocketBase) IPropertyRepository {
+	propertyRepository := PropertyRepository{
+		app,
+	}
 	return propertyRepository
 }

@@ -49,7 +49,8 @@ func (p PersonRepository) CreatePersonForUser(userId string) error {
 }
 
 func NewPersonRepository(app *pocketbase.PocketBase) IPersonRepository {
-	return PersonRepository{
-		app: app,
+	personRepository := PersonRepository{
+		app,
 	}
+	return personRepository
 }
