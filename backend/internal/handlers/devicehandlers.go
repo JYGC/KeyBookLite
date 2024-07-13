@@ -14,7 +14,7 @@ type IDeviceHandlers interface {
 }
 
 type DeviceHandlers struct {
-	DataImportServices services.IDataImportServices
+	dataImportServices services.IDataImportServices
 }
 
 func (d DeviceHandlers) ImportCsv(context echo.Context) error {
@@ -26,13 +26,13 @@ func (d DeviceHandlers) ImportCsv(context echo.Context) error {
 		return csvContentJsonErr
 	}
 
-	d.DataImportServices.ProcessImportData(loggedInUser, csvContentJson)
+	d.dataImportServices.ProcessImportData(loggedInUser, csvContentJson)
 	return nil
 }
 
 func NewDeviceHandlers(dataImportServices services.IDataImportServices) IDeviceHandlers {
 	deviceHandlers := DeviceHandlers{}
-	deviceHandlers.DataImportServices = dataImportServices
+	deviceHandlers.dataImportServices = dataImportServices
 	return deviceHandlers
 }
 
