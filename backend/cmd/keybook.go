@@ -4,12 +4,11 @@ import (
 	"keybook/backend/internal/frontend"
 	"keybook/backend/internal/handlers"
 	"keybook/backend/internal/repositories"
+	"keybook/backend/internal/services"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/pocketbase/pocketbase"
-	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 	"go.uber.org/dig"
 )
@@ -23,8 +22,13 @@ func startFrontend() {
 func startBackend() {
 	container := dig.New()
 	container.Provide(pocketbase.New)
+
 	container.Provide(repositories.NewPersonRepository)
+	container.Provide(repositories.NewPropertyRepository)
 	container.Provide(repositories.NewPersonDeviceRepository)
+
+	container.Provide(services.NewDataImportServices)
+
 	container.Provide(handlers.NewDeviceHandlers)
 
 	container.Invoke(func(
@@ -32,10 +36,7 @@ func startBackend() {
 		personRepository repositories.IPersonRepository,
 		deviceHandlers handlers.IDeviceHandlers,
 	) {
-		// serves static files from the provided public dir (if exists)
 		app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
-			e.Router.GET("/*", apis.StaticDirectoryHandler(os.DirFS("./pb_public"), false))
-
 			handlers.AddDeviceHandlersToRouter(e.Router, deviceHandlers)
 			return nil
 		})

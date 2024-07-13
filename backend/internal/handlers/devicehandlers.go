@@ -3,8 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"keybook/backend/internal/dtos"
-	"keybook/backend/internal/repositories"
+	"keybook/backend/internal/services"
 
 	"github.com/labstack/echo/v5"
 	"github.com/pocketbase/pocketbase/apis"
@@ -15,29 +14,25 @@ type IDeviceHandlers interface {
 }
 
 type DeviceHandlers struct {
-	PersonDeviceRepository repositories.IPersonDeviceRepository
+	DataImportServices services.IDataImportServices
 }
 
 func (d DeviceHandlers) ImportCsv(context echo.Context) error {
+	loggedInUser := apis.RequestInfo(context).AuthRecord
 	csvContent := apis.RequestInfo(context).Data
 	csvContentJson, csvContentJsonErr := json.Marshal(csvContent)
 	if csvContentJsonErr != nil {
 		fmt.Printf("err: %v\n", csvContentJsonErr)
+		return csvContentJsonErr
 	}
-	var csvContentDto dtos.AddPropertyDeviceAndHistoriesDto
-	json.Unmarshal(csvContentJson, &csvContentDto)
-	//
-	hason, hasonErr := json.Marshal(csvContentDto)
-	if hasonErr != nil {
-		fmt.Printf("hasonErr: %v\n", hasonErr)
-	}
-	fmt.Printf("string(hason): %v\n", string(hason))
+
+	d.DataImportServices.ProcessImportData(loggedInUser, csvContentJson)
 	return nil
 }
 
-func NewDeviceHandlers(personDeviceRepository repositories.IPersonDeviceRepository) IDeviceHandlers {
+func NewDeviceHandlers(dataImportServices services.IDataImportServices) IDeviceHandlers {
 	deviceHandlers := DeviceHandlers{}
-	deviceHandlers.PersonDeviceRepository = personDeviceRepository
+	deviceHandlers.DataImportServices = dataImportServices
 	return deviceHandlers
 }
 
