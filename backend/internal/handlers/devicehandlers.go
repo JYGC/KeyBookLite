@@ -36,6 +36,6 @@ func NewDeviceHandlers(dataImportServices services.IDataImportServices) IDeviceH
 	return deviceHandlers
 }
 
-func AddDeviceHandlersToRouter(router *echo.Echo, deviceHandlers IDeviceHandlers) {
+func RegisterDeviceHandlersToRouter(router *echo.Echo, deviceHandlers IDeviceHandlers) {
 	router.POST("/api/device/importcsv", deviceHandlers.ImportCsv)
 }

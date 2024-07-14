@@ -17,8 +17,8 @@ type IDataImportServices interface {
 }
 
 type DataImportServices struct {
-	personRepository   repositories.IPersonRepository
-	propertyRepository repositories.IPropertyRepository
+	personRepository repositories.IPersonRepository
+	propertyServices IPropertyServices
 }
 
 func (d DataImportServices) ProcessImportData(loggedInUser *models.Record, importDateJson []byte) error {
@@ -34,20 +34,18 @@ func (d DataImportServices) ProcessImportData(loggedInUser *models.Record, impor
 		}
 	}
 
-	fmt.Printf("personNames: %v\n", personNames)
-
-	loggedInPerson, _ := d.personRepository.GetPersonForUser(loggedInUser)
-	fmt.Printf("loggedInPerson: %v\n", loggedInPerson)
+	fmt.Printf("loggedInUser: %v\n", loggedInUser)
+	//d.propertyServices.AddPropertyIfNotExists(loggedInUser, importDataDto.PropertyAddress, time.Now())
 
 	return nil
 }
 
 func NewDataImportServices(
 	personRepository repositories.IPersonRepository,
-	propertyRepository repositories.IPropertyRepository,
+	propertyServices IPropertyServices,
 ) IDataImportServices {
-	dataImportServices := DataImportServices{}
-	dataImportServices.personRepository = personRepository
-	dataImportServices.propertyRepository = propertyRepository
-	return dataImportServices
+	return DataImportServices{
+		personRepository,
+		propertyServices,
+	}
 }

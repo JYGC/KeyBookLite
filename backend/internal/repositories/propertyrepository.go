@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/pocketbase/dbx"
@@ -37,13 +38,15 @@ func (p PropertyRepository) AddNewProperty(owner *models.Record, propertyAddress
 	newProperty := models.NewRecord(propertiesCollection)
 	newProperty.Set("address", propertyAddress)
 
-	ownershipsCollection, findOwnershipsCollectionErr := p.app.Dao().FindCollectionByNameOrId("ownerships")
-	if findOwnershipsCollectionErr != nil {
-		return "", findOwnershipsCollectionErr
+	id1 := newProperty.Get("id")
+	fmt.Printf("id1: %v\n", id1)
+	if saveRecordErr := p.app.Dao().SaveRecord(newProperty); saveRecordErr != nil {
+		return "", saveRecordErr
 	}
-	newOwnership := models.NewRecord(ownershipsCollection)
-	newOwnership.Set("startdate", startOfOwnership)
-	return "", nil
+	id2 := newProperty.Get("id")
+	fmt.Printf("id2: %v\n", id2)
+
+	return id2.(string), nil
 }
 
 func NewPropertyRepository(app *pocketbase.PocketBase) IPropertyRepository {
