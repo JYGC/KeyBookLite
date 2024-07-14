@@ -13,10 +13,10 @@ type OwnershipRepository struct {
 	app *pocketbase.PocketBase
 }
 
-func (o OwnershipRepository) AddOwnership(ownerPersonId string, propertyId string, startOfOwnership time.Time) error {
+func (o OwnershipRepository) AddOwnership(ownerPersonId string, propertyId string, startOfOwnership time.Time) (string, error) {
 	ownershipsCollection, findCollectionErr := o.app.Dao().FindCollectionByNameOrId("ownerships")
 	if findCollectionErr != nil {
-		return findCollectionErr
+		return "", findCollectionErr
 	}
 
 	newOwnership := models.NewRecord(ownershipsCollection)
@@ -25,10 +25,10 @@ func (o OwnershipRepository) AddOwnership(ownerPersonId string, propertyId strin
 	newOwnership.Set("startdate", startOfOwnership)
 
 	if saveRecordErr := o.app.Dao().SaveRecord(newOwnership); saveRecordErr != nil {
-		return saveRecordErr
+		return "", saveRecordErr
 	}
 
-	return nil
+	return newOwnership.Get("id").(string), nil
 }
 
 func NewOwnershipRepository(app *pocketbase.PocketBase) IOwnershipRepository {

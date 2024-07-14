@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"fmt"
+	"keybook/backend/internal/helpers"
 	"time"
 
 	"github.com/pocketbase/dbx"
@@ -24,7 +24,7 @@ func (p PropertyRepository) GetPropertyIdByName(propertyAddress string) (string,
 		"address = {:address}",
 		dbx.Params{"address": propertyAddress},
 	)
-	if err != nil {
+	if err != nil && !helpers.IsNoRowsResult(err) {
 		return "", err
 	}
 	return property.Get("id").(string), nil
@@ -38,15 +38,11 @@ func (p PropertyRepository) AddNewProperty(owner *models.Record, propertyAddress
 	newProperty := models.NewRecord(propertiesCollection)
 	newProperty.Set("address", propertyAddress)
 
-	id1 := newProperty.Get("id")
-	fmt.Printf("id1: %v\n", id1)
 	if saveRecordErr := p.app.Dao().SaveRecord(newProperty); saveRecordErr != nil {
 		return "", saveRecordErr
 	}
-	id2 := newProperty.Get("id")
-	fmt.Printf("id2: %v\n", id2)
 
-	return id2.(string), nil
+	return newProperty.Get("id").(string), nil
 }
 
 func NewPropertyRepository(app *pocketbase.PocketBase) IPropertyRepository {
