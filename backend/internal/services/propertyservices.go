@@ -9,7 +9,11 @@ import (
 )
 
 type IPropertyServices interface {
-	AddPropertyIfNotExists(ownerUser *models.Record, propertyAddress string, startOfOwnership time.Time) (string, error)
+	AddPropertyIfNotExists(
+		ownerUser *models.Record,
+		propertyAddress string,
+		startOfOwnership time.Time,
+	) (string, error)
 }
 
 type PropertyServices struct {
@@ -17,7 +21,11 @@ type PropertyServices struct {
 	propertyRepository repositories.IPropertyRepository
 }
 
-func (p PropertyServices) AddPropertyIfNotExists(loggedInUser *models.Record, propertyAddress string, startOfOwnership time.Time) (string, error) {
+func (p PropertyServices) AddPropertyIfNotExists(
+	loggedInUser *models.Record,
+	propertyAddress string,
+	startOfOwnership time.Time,
+) (string, error) {
 	loggedInPerson, _ := p.personRepository.GetPersonForUser(loggedInUser)
 	fmt.Printf("loggedInPerson: %v\n", loggedInPerson)
 

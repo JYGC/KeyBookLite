@@ -6,6 +6,7 @@ import (
 	"keybook/backend/internal/dtos"
 	"keybook/backend/internal/repositories"
 	"strings"
+	"time"
 
 	"github.com/pocketbase/pocketbase/models"
 )
@@ -35,7 +36,7 @@ func (d DataImportServices) ProcessImportData(loggedInUser *models.Record, impor
 	}
 
 	fmt.Printf("loggedInUser: %v\n", loggedInUser)
-	//d.propertyServices.AddPropertyIfNotExists(loggedInUser, importDataDto.PropertyAddress, time.Now())
+	d.propertyServices.AddPropertyIfNotExists(loggedInUser, importDataDto.PropertyAddress, time.Now())
 
 	return nil
 }
