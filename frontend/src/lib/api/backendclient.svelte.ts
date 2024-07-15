@@ -1,7 +1,8 @@
 import PocketBase from "pocketbase";
 import { PUBLIC_POCKETBASE_URL } from "$env/static/public";
+import type { IBackendClient } from "$lib/interfaces";
 
-export class BackendClient {
+export class BackendClient implements IBackendClient {
   private readonly __pb = $state<PocketBase>(new PocketBase());
   
   constructor() {

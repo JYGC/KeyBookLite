@@ -1,6 +1,7 @@
 import type { AddDeviceAndHistoriesDTO, AddPropertyDeviceAndHistoriesDTO } from "$lib/dtos";
+import type { ICsvFileToObjectConverter } from "$lib/interfaces";
 
-export class CsvFileToObjectConverter {  
+export class CsvFileToObjectConverter implements ICsvFileToObjectConverter {  
   private convertCsvFileToObject = async (input: FileList | null): Promise<AddPropertyDeviceAndHistoriesDTO | null> => {
     if (input === null) {
       return null;

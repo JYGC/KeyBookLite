@@ -1,6 +1,7 @@
 import type { BackendClient } from "$lib/api/backendclient.svelte";
+import type { ILoginApi } from "$lib/interfaces";
 
-export class LoginApi {
+export class LoginApi implements ILoginApi {
   private readonly __backendClient: BackendClient;
   
   public email = $state<string>("");

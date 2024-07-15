@@ -1,4 +1,6 @@
-export class DeviceListDataService {
+import type { IDeviceListDataService } from "$lib/interfaces";
+
+export class DeviceListDataService implements IDeviceListDataService {
   devices = $state<string[]>([]);
   private mustReload = $state<boolean>(true);
 

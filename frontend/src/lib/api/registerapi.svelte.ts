@@ -1,6 +1,7 @@
 import type { BackendClient } from "$lib/api/backendclient.svelte";
+import type { IRegisterApi } from "$lib/interfaces";
 
-export class RegisterApi {
+export class RegisterApi implements IRegisterApi {
   private readonly __backendClient: BackendClient;
   
   public name = $state<string>("");
