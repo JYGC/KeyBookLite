@@ -7,14 +7,12 @@ import (
 	"keybook/backend/internal/repositories"
 	"strings"
 	"time"
-
-	"github.com/pocketbase/pocketbase/models"
 )
 
 // all db calls here must have dao := app.Dao().WithoutHooks()
 
 type IDataImportServices interface {
-	ProcessImportData(loggedInUserId *models.Record, importDateJson []byte) error
+	ProcessImportData(loggedInUserId string, importDateJson []byte) error
 }
 
 type DataImportServices struct {
@@ -22,7 +20,7 @@ type DataImportServices struct {
 	propertyServices IPropertyServices
 }
 
-func (d DataImportServices) ProcessImportData(loggedInUser *models.Record, importDateJson []byte) error {
+func (d DataImportServices) ProcessImportData(loggedInUserId string, importDateJson []byte) error {
 	var importDataDto dtos.AddPropertyDeviceAndHistoriesDto
 	json.Unmarshal(importDateJson, &importDataDto)
 
@@ -35,8 +33,8 @@ func (d DataImportServices) ProcessImportData(loggedInUser *models.Record, impor
 		}
 	}
 
-	fmt.Printf("loggedInUser: %v\n", loggedInUser)
-	d.propertyServices.AddPropertyIfNotExists(loggedInUser, importDataDto.PropertyAddress, time.Now())
+	fmt.Printf("loggedInUser: %v\n", loggedInUserId)
+	d.propertyServices.AddPropertyIfNotExists(loggedInUserId, importDataDto.PropertyAddress, time.Now())
 
 	return nil
 }

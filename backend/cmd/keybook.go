@@ -49,11 +49,6 @@ func startBackend() {
 			return nil
 		})
 
-		app.OnModelAfterCreate("users").Add(func(e *core.ModelEvent) error {
-			personRepository.CreatePersonForUser(e.Model.GetId())
-			return nil
-		})
-
 		if err := app.Start(); err != nil {
 			log.Fatal(err)
 		}

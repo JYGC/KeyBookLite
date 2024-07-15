@@ -1,19 +1,17 @@
 package services
 
 import (
-	"fmt"
+	"keybook/backend/internal/dtos"
 	"keybook/backend/internal/repositories"
 	"time"
-
-	"github.com/pocketbase/pocketbase/models"
 )
 
 type IPropertyServices interface {
 	AddPropertyIfNotExists(
-		ownerUser *models.Record,
+		loggedInUserId string,
 		propertyAddress string,
 		startOfOwnership time.Time,
-	) (string, error)
+	) (dtos.PropertyIdAddressDto, error)
 }
 
 type PropertyServices struct {
@@ -22,21 +20,18 @@ type PropertyServices struct {
 }
 
 func (p PropertyServices) AddPropertyIfNotExists(
-	loggedInUser *models.Record,
+	loggedInUserId string,
 	propertyAddress string,
 	startOfOwnership time.Time,
-) (string, error) {
-	loggedInPerson, _ := p.personRepository.GetPersonForUser(loggedInUser)
-	fmt.Printf("loggedInPerson: %v\n", loggedInPerson)
-
-	propertyId, getPropertyByNameErr := p.propertyRepository.GetPropertyIdByName(propertyAddress)
+) (dtos.PropertyIdAddressDto, error) {
+	properties, getPropertyByNameErr := p.propertyRepository.GetPropertiesManagedByUser(loggedInUserId, propertyAddress)
 	if getPropertyByNameErr != nil {
-		return "", getPropertyByNameErr
+		return dtos.PropertyIdAddressDto{}, getPropertyByNameErr
 	}
-	if propertyId != "" {
-		return propertyId, nil
+	if len(properties) > 0 {
+		return properties[0], nil
 	}
-	return p.propertyRepository.AddNewProperty(loggedInUser, propertyAddress, startOfOwnership)
+	return p.propertyRepository.AddNewProperty(loggedInUserId, propertyAddress)
 }
 
 func NewPropertyServices(
