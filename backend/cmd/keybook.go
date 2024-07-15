@@ -1,6 +1,7 @@
 package main
 
 import (
+	"keybook/backend/internal/databases"
 	"keybook/backend/internal/frontend"
 	"keybook/backend/internal/handlers"
 	"keybook/backend/internal/repositories"
@@ -22,27 +23,29 @@ func startFrontend() {
 func startBackend() {
 	container := dig.New()
 	container.Provide(pocketbase.New)
+	container.Provide(databases.NewHistoryDatabase)
 
 	container.Provide(repositories.NewPersonRepository)
 	container.Provide(repositories.NewPropertyRepository)
+	container.Provide(repositories.NewOwnershipRepository)
 	container.Provide(repositories.NewPersonDeviceRepository)
+	container.Provide(repositories.NewHistoryRepository)
 
 	container.Provide(services.NewDataImportServices)
+	container.Provide(services.NewPropertyServices)
 
 	container.Provide(handlers.NewDeviceHandlers)
+	container.Provide(handlers.NewHistoryHandlers)
 
 	container.Invoke(func(
 		app *pocketbase.PocketBase,
 		personRepository repositories.IPersonRepository,
 		deviceHandlers handlers.IDeviceHandlers,
+		historyHandlers handlers.IHistoryHandlers,
 	) {
 		app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
-			handlers.AddDeviceHandlersToRouter(e.Router, deviceHandlers)
-			return nil
-		})
-
-		app.OnModelAfterCreate("users").Add(func(e *core.ModelEvent) error {
-			personRepository.CreatePersonForUser(e.Model.GetId())
+			handlers.RegisterDeviceHandlersToRouter(e.Router, deviceHandlers)
+			handlers.RegisterHistoryHandlersToRouter(e.Router, historyHandlers)
 			return nil
 		})
 

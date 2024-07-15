@@ -6,22 +6,21 @@ import (
 	"keybook/backend/internal/dtos"
 	"keybook/backend/internal/repositories"
 	"strings"
-
-	"github.com/pocketbase/pocketbase/models"
+	"time"
 )
 
 // all db calls here must have dao := app.Dao().WithoutHooks()
 
 type IDataImportServices interface {
-	ProcessImportData(loggedInUserId *models.Record, importDateJson []byte) error
+	ProcessImportData(loggedInUserId string, importDateJson []byte) error
 }
 
 type DataImportServices struct {
-	personRepository   repositories.IPersonRepository
-	propertyRepository repositories.IPropertyRepository
+	personRepository repositories.IPersonRepository
+	propertyServices IPropertyServices
 }
 
-func (d DataImportServices) ProcessImportData(loggedInUser *models.Record, importDateJson []byte) error {
+func (d DataImportServices) ProcessImportData(loggedInUserId string, importDateJson []byte) error {
 	var importDataDto dtos.AddPropertyDeviceAndHistoriesDto
 	json.Unmarshal(importDateJson, &importDataDto)
 
@@ -34,20 +33,18 @@ func (d DataImportServices) ProcessImportData(loggedInUser *models.Record, impor
 		}
 	}
 
-	fmt.Printf("personNames: %v\n", personNames)
-
-	loggedInPerson, _ := d.personRepository.GetPersonForUser(loggedInUser)
-	fmt.Printf("loggedInPerson: %v\n", loggedInPerson)
+	fmt.Printf("loggedInUser: %v\n", loggedInUserId)
+	d.propertyServices.AddPropertyIfNotExists(loggedInUserId, importDataDto.PropertyAddress, time.Now())
 
 	return nil
 }
 
 func NewDataImportServices(
 	personRepository repositories.IPersonRepository,
-	propertyRepository repositories.IPropertyRepository,
+	propertyServices IPropertyServices,
 ) IDataImportServices {
-	dataImportServices := DataImportServices{}
-	dataImportServices.personRepository = personRepository
-	dataImportServices.propertyRepository = propertyRepository
-	return dataImportServices
+	return DataImportServices{
+		personRepository,
+		propertyServices,
+	}
 }
