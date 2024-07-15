@@ -26,7 +26,7 @@ func (d DeviceHandlers) ImportCsv(context echo.Context) error {
 		return csvContentJsonErr
 	}
 
-	d.dataImportServices.ProcessImportData(loggedInUser, csvContentJson)
+	d.dataImportServices.ProcessImportData(loggedInUser.Id, csvContentJson)
 	return nil
 }
 
