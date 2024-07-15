@@ -1,14 +1,13 @@
-import type { BackendClient } from "$lib/api/backendclient.svelte";
-import type { IRegisterApi } from "$lib/interfaces";
+import type { IBackendClient, IRegisterApi } from "$lib/interfaces";
 
 export class RegisterApi implements IRegisterApi {
-  private readonly __backendClient: BackendClient;
+  private readonly __backendClient: IBackendClient;
   
   public name = $state<string>("");
   public email = $state<string>("");
   public password = $state<string>("");
 
-  constructor(backendClient: BackendClient) {
+  constructor(backendClient: IBackendClient) {
     this.__backendClient = backendClient;
   }
 

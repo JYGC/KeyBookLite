@@ -1,14 +1,12 @@
-import type { BackendClient } from "$lib/api/backendclient.svelte";
-import type { IUploadCsvApi } from "$lib/interfaces";
-import type { CsvFileToObjectConverter } from "$lib/modules/csvfiletoobjectconverter.svelte";
+import type { IBackendClient, ICsvFileToObjectConverter, IUploadCsvApi } from "$lib/interfaces";
 
 export class UploadCsvApi implements IUploadCsvApi {
-  private readonly __csvFileToObjectConverter: CsvFileToObjectConverter;
-  private readonly __authManager: BackendClient;
+  private readonly __csvFileToObjectConverter: ICsvFileToObjectConverter;
+  private readonly __authManager: IBackendClient;
   
   constructor(
-    csvFileToObjectConverter: CsvFileToObjectConverter,
-    authManager: BackendClient
+    csvFileToObjectConverter: ICsvFileToObjectConverter,
+    authManager: IBackendClient
   ) {
     this.__csvFileToObjectConverter = csvFileToObjectConverter;
     this.__authManager = authManager;
